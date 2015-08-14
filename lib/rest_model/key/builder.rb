@@ -10,14 +10,17 @@ class RestModel
 
         key.model = self
         attr_accessor key.name
-        self.keys  << key
+
+        self.keys ||= []
+        self.keys = self.keys + [key]
         self.id_key = key if key.options[:id]
       end
 
       def summarizes(*args)
+        self.summarized_keys ||= []
         args.each do |name|
           key = keys.find {|key| key.name == name}
-          summarized_keys << key if key
+          self.summarized_keys = self.summarized_keys + [key] if key
         end
       end
 

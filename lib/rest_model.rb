@@ -4,6 +4,7 @@ require "active_support/inflector"
 require "active_support/concern"
 require "active_support/core_ext/object"
 require "active_support/core_ext/class/attribute_accessors"
+require 'active_support/core_ext/class/attribute'
 require "active_support/core_ext/object/try"
 require "active_support/core_ext/array/wrap"
 require "active_support/core_ext/array/access"
@@ -76,25 +77,12 @@ class RestModel
     __send__(id_key.name)
   end
 
-  def self.id_key
-    @id_key
-  end
+  class_attribute :keys, instance_accessor: false, instance_predicate: false
+  class_attribute :summarized_keys, instance_accessor: false, instance_predicate: false
+  class_attribute :id_key, instance_accessor: false, instance_predicate: false
 
-  def self.id_key=(id_key)
-    @id_key = id_key
-  end
-
-  def self.resource_name=(resource_name)
-    @resource_name = resource_name
-  end
-
-  def self.keys
-    @keys ||= []
-  end
-
-  def self.summarized_keys
-    @summarized_keys ||= []
-  end
+  self.keys ||= []
+  self.summarized_keys ||= []
 
   def self.relations
     keys.find_all(&:relation?)
@@ -102,6 +90,10 @@ class RestModel
 
   def self.resource_name(custom_name = nil)
     @resource_name ||= custom_name or to_s.demodulize.tableize
+  end
+
+  def self.resource_name=(resource_name)
+    @resource_name = resource_name
   end
 
   def self.convert_input_keys(converter = nil)

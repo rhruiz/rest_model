@@ -5,6 +5,8 @@ describe "summarization" do
     subject {@root[:entries].first}
 
     it 'summarizes resources' do
+        require 'pry'
+        binding.pry
       subject.keys.count.should == 3
       subject[:id].should    == '138911938'
       subject[:login].should == 'jackiechan2010'
